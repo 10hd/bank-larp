@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bank App</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #000;
+    --surface: #1c1c1e;
+    --surface2: #2c2c2e;
+    --text: #fff;
+    --text-muted: #8e8e93;
+    --accent: #fff;
+    --border: #3a3a3c;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Status bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px 6px;
+  }
+
+  .status-time {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .signal-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+  }
+
+  .signal-bars span {
+    width: 3px;
+    background: var(--text);
+    border-radius: 1px;
+  }
+  .signal-bars span:nth-child(1) { height: 4px; }
+  .signal-bars span:nth-child(2) { height: 7px; }
+  .signal-bars span:nth-child(3) { height: 10px; }
+  .signal-bars span:nth-child(4) { height: 12px; opacity: 0.35; }
+
+  .wifi-icon svg, .battery-icon svg {
+    fill: var(--text);
+  }
+
+  .battery-icon {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Nav bar */
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px 12px;
+  }
+
+  .nav-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+    opacity: 0.85;
+  }
+
+  /* Header */
+  .header {
+    padding: 8px 20px 24px;
+  }
+
+  .header h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  /* Content */
+  .content {
+    flex: 1;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Balance card */
+  .balance-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .balance-label {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.1px;
+  }
+
+  .balance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .balance-amount {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .more-btn {
+    color: var(--text-muted);
+    font-size: 22px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+
+  /* Accounts card */
+  .accounts-card {
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+
+  .accounts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .accounts-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .accounts-total {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  .account-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .account-row:active {
+    background: var(--surface2);
+  }
+
+  .account-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--surface2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .account-info {
+    flex: 1;
+  }
+
+  .account-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .account-subtitle {
+    font-size: 13px;
+    color: #3a7fd5;
+    font-weight: 500;
+  }
+
+  .account-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .account-amount {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .chevron {
+    color: var(--text-muted);
+    font-size: 13px;
+    opacity: 0.6;
+  }
+
+  /* Bottom tab bar */
+  .tab-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0 28px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+    min-width: 70px;
+  }
+
+  .tab-item.active {
+    opacity: 1;
+  }
+
+  .tab-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Nav Bar -->
+  <div class="nav-bar">
+    <div class="nav-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+    <div class="nav-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="8" height="8" rx="1"/>
+        <rect x="14" y="3" width="8" height="8" rx="1"/>
+        <rect x="2" y="13" width="8" height="8" rx="1"/>
+        <rect x="14" y="13" width="8" height="8" rx="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Accounts</h1>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-label">Available amount</div>
+      <div class="balance-row">
+        <div class="balance-amount" id="balance-main"></div>
+        <div class="more-btn">···</div>
+      </div>
+    </div>
+
+    <!-- Accounts Card -->
+    <div class="accounts-card">
+      <div class="accounts-header">
+        <span class="accounts-title">Accounts and cards</span>
+        <span class="accounts-total" id="balance-header"></span>
+      </div>
+      <div class="account-row" onclick="addRandom()">
+        <div class="account-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </div>
+        <div class="account-info">
+          <div class="account-name">Privatkonto</div>
+          <div class="account-subtitle">bank app</div>
+        </div>
+        <div class="account-right">
+          <span class="account-amount" id="balance-row"></span>
+          <span class="chevron">›</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <line x1="2" y1="10" x2="22" y2="10"/>
+      </svg>
+      <span class="tab-label">Accounts</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      <span class="tab-label">Savings goal</span>
+    </div>
+    <div class="tab-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="5" cy="5" r="1" fill="white"/>
+        <circle cx="12" cy="5" r="1" fill="white"/>
+        <circle cx="19" cy="5" r="1" fill="white"/>
+        <circle cx="5" cy="12" r="1" fill="white"/>
+        <circle cx="12" cy="12" r="1" fill="white"/>
+        <circle cx="19" cy="12" r="1" fill="white"/>
+        <circle cx="5" cy="19" r="1" fill="white"/>
+        <circle cx="12" cy="19" r="1" fill="white"/>
+        <circle cx="19" cy="19" r="1" fill="white"/>
+      </svg>
+      <span class="tab-label">More</span>
+    </div>
+  </div>
+
+</div>
+<script>
+  let current = 326472.52;
+
+  function fmt(n) {
+    const [int, dec] = n.toFixed(2).split('.');
+    const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+    return grouped + ',' + dec;
+  }
+
+  function updateAll() {
+    const formatted = fmt(current);
+    document.getElementById('balance-main').textContent = formatted;
+    document.getElementById('balance-header').textContent = formatted;
+    document.getElementById('balance-row').textContent = formatted;
+  }
+
+  function addRandom() {
+    const rand = Math.floor(Math.random() * 2001) + 1000;
+    current += rand;
+    updateAll();
+  }
+
+  updateAll();
+</script>
+</body>
+</html>
